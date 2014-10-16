@@ -1,0 +1,136 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>RedisClient by caoxinyu</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>RedisClient</h1>
+        <p>Redis GUI Tool</p>
+        <p class="view"><a href="https://github.com/caoxinyu/RedisClient">View the Project on GitHub <small>caoxinyu/RedisClient</small></a></p>
+        <ul>
+          <li><a href="https://github.com/caoxinyu/RedisClient/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/caoxinyu/RedisClient/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/caoxinyu/RedisClient">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a name="redis-client" class="anchor" href="#redis-client"><span class="octicon octicon-link"></span></a>Redis Client</h1>
+
+<p>This is a redis client GUI tool written based on Java SWT and Jedis. It's my objective to build the most convenient redis client GUI tool in the world. In the first place, it will facilitate in editing redis data, such as: add, update, delete, search, cut, copy, paste etc.</p>
+
+<p><img src="https://github.com/caoxinyu/RedisClient/raw/master/src/main/resources/screen.png" alt="My image"></p>
+
+<hr>
+
+<h2>
+<a name="features" class="anchor" href="#features"><span class="octicon octicon-link"></span></a>Features</h2>
+
+<p><strong>Windows Explorer style UI</strong></p>
+
+<p><strong>Multiple Redis version adaptive</strong></p>
+
+<ol>
+<li>Manage redis server, support server password authentication</li>
+<li>Manage redis data favorite</li>
+<li>Manage redis data
+
+<ul>
+<li>New redis data: string, list, hash, set, sorted set</li>
+<li>Rename redis data </li>
+<li>Delete redis data</li>
+<li>Update redis data</li>
+<li>Cut, copy paste redis data</li>
+<li>Import, export redis data</li>
+<li>Search redis data</li>
+<li>Order redis data by key, data type, size</li>
+<li>Navigation history</li>
+<li>Support time to live</li>
+<li>Support paging query redis data</li>
+<li>Support multiple selection to delete, cut, copy, export redis data</li>
+<li>Support flat view and hierarchy view to list redis data</li>
+<li>Support multiple language, now support English and Chinese</li>
+<li>Support run redis command in console</li>
+<li>Support run publish/subscribe</li>
+<li>Watch redis data for different format(plain text, json, xml, base64 image)</li>
+</ul>
+</li>
+</ol>
+
+<h2>
+<a name="install--run-for-windows" class="anchor" href="#install--run-for-windows"><span class="octicon octicon-link"></span></a>Install &amp; run for Windows</h2>
+
+<p>(For Linux, please switch <a href="https://github.com/caoxinyu/RedisClient/tree/linux">branch</a>)</p>
+
+<h3>
+<a name="if-you-dont-want-to-install-jdk" class="anchor" href="#if-you-dont-want-to-install-jdk"><span class="octicon octicon-link"></span></a>If you don't want to install JDK</h3>
+
+<ol>
+<li>Please download <a href="https://raw.githubusercontent.com/caoxinyu/RedisClient/master/release/redisclient-win32.x86.2.0.exe">redisclient-win32.x86.2.0.exe</a>
+</li>
+<li>Double click redisclient-win32.x86.2.0.exe to install it to directory you choosed</li>
+<li>Run it by double click redisclient-win32.x86.2.0.exe</li>
+</ol>
+
+<h3>
+<a name="if-you-have-installed-the-jdk-or-jre-5" class="anchor" href="#if-you-have-installed-the-jdk-or-jre-5"><span class="octicon octicon-link"></span></a>If you have installed the JDK or JRE 5+</h3>
+
+<h4>
+<a name="for-64-bit-windows" class="anchor" href="#for-64-bit-windows"><span class="octicon octicon-link"></span></a>For 64 bit windows</h4>
+
+<ol>
+<li>Download the runable jar file <a href="https://github.com/caoxinyu/RedisClient/blob/master/release/redisclient-win32.x86_64.2.0.jar?raw=true">redisclient-win32.x86_64.2.0.jar</a>
+</li>
+<li>Run the redisclient-win32.x86_64.2.0.jar
+
+<ul>
+<li>You can run it by double clicking it if your registry for jar file is configured correctly.</li>
+<li>Or you can run it from command line, and input <code>java -jar redisclient-win32.x86_64.2.0.jar</code>. Please pay attention to run it as administrator in windows 8.</li>
+</ul>
+</li>
+</ol>
+
+<h4>
+<a name="for-32-bit-windows" class="anchor" href="#for-32-bit-windows"><span class="octicon octicon-link"></span></a>For 32 bit windows</h4>
+
+<ol>
+<li>Download the runable jar file <a href="https://github.com/caoxinyu/RedisClient/blob/master/release/redisclient-win32.x86.2.0.jar?raw=true">redisclient-win32.x86.2.0.jar</a>
+</li>
+<li>Run the redisclient-win32.x86.2.0.jar
+
+<ul>
+<li>You can run it by double clicking it if your registry for jar file is configured correctly.</li>
+<li>Or you can run it from command line, and input <code>java -jar redisclient-win32.x86.2.0.jar</code>. </li>
+</ul>
+</li>
+</ol>
+
+<h2>
+<a name="donate" class="anchor" href="#donate"><span class="octicon octicon-link"></span></a>Donate</h2>
+
+<p>If you find this software useful and would like to support it, you can do so simply by scanning my Alipay two-dimension code and donating whatever you like.</p>
+
+<p><img src="https://github.com/caoxinyu/RedisClient/raw/master/src/main/resources/code.png" alt="My code"></p>
+      </section>
+    </div>
+    <footer>
+      <p>Project maintained by <a href="https://github.com/caoxinyu">caoxinyu</a></p>
+      <p>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></p>
+    </footer>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
