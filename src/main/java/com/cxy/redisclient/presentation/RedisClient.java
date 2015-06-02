@@ -121,6 +121,9 @@ public class RedisClient {
 	private CTabItem mainTabItem;
 	private CTabFolder tabFolder;
 	private CTabFolder tabFolder_1;
+	private SashForm sashForm ;
+	private SashForm sashForm_1;
+	private Composite composite_2;
 	private DataContents openDataContent = new DataContents();
 	private Tools<Console> openConsole = new Tools<Console>();
 	private Tools<Publish> openPublish = new Tools<Publish>();
@@ -398,7 +401,7 @@ public class RedisClient {
 		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		text.setEditable(false);
 
-		final SashForm sashForm = new SashForm(composite_1, SWT.NONE);
+		sashForm = new SashForm(composite_1, SWT.NONE);
 		sashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1,
 				1));
 
@@ -414,10 +417,10 @@ public class RedisClient {
 
 		initMenuMulti();
 
-		final Composite composite_2 = new Composite(sashForm, SWT.NONE);
+		composite_2 = new Composite(sashForm, SWT.NONE);
 		composite_2.setLayout(new GridLayout(1, false));
 
-		final SashForm sashForm_1 = new SashForm(composite_2, SWT.VERTICAL);
+		sashForm_1 = new SashForm(composite_2, SWT.VERTICAL);
 		sashForm_1.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,
 				1, 1));
 		sashForm_1.setLocation(0, 0);
@@ -438,8 +441,15 @@ public class RedisClient {
 		tabFolder.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				if (tabFolder.getSelection() == mainTabItem)
+				if (tabFolder.getSelection() == mainTabItem){
 					treeItemSelected(true);
+					sashForm.setMaximizedControl(null);
+					sashForm_1.setMaximizedControl(null);
+				}
+				else {
+					sashForm.setMaximizedControl(composite_2);
+					sashForm_1.setMaximizedControl(tabFolder);
+				}	
 			}
 		});
 		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(
@@ -892,6 +902,7 @@ public class RedisClient {
 	private void initTable(CTabFolder tabFolder) {
 		table = new Table(tabFolder, SWT.BORDER | SWT.FULL_SELECTION
 				| SWT.MULTI);
+		table.setLinesVisible(true);
 		mainTabItem.setControl(table);
 		table.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -987,7 +998,7 @@ public class RedisClient {
 		table.setHeaderVisible(true);
 
 		tblclmnName = new TableColumn(table, SWT.NONE);
-		tblclmnName.setWidth(150);
+		tblclmnName.setWidth(350);
 		tblclmnName.setText(i18nFile.getText(I18nFile.NAME));
 		tblclmnName.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -1439,7 +1450,7 @@ public class RedisClient {
 		mntmRefresh.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
-				rootTreeItemSelected(true);
+				treeItemSelected(true);
 			}
 		});
 		mntmRefresh.setText(i18nFile.getText(I18nFile.REFRESH));
@@ -3481,17 +3492,18 @@ public class RedisClient {
 		int id = (Integer) itemsSelected[0].getData(NODE_ID);
 
 		if(!openConsole.isOpen(id)){
-			final Console console = new Console(tabFolder_1, id);
+			final Console console = new Console(tabFolder, id);
 			CTabItem  tabItem = console.init();
 			openConsole.add(console);
-			
+			sashForm.setMaximizedControl(composite_2);
+			sashForm_1.setMaximizedControl(tabFolder);
 			tabItem.addDisposeListener(new DisposeListener() {
 				public void widgetDisposed(DisposeEvent e) {
 					openConsole.remove(console);
 				}
 			});
 		}else
-			tabFolder_1.setSelection(openConsole.getTabItem(id));
+			tabFolder.setSelection(openConsole.getTabItem(id));
 			
 	}
 	
