@@ -159,11 +159,11 @@ public abstract class NewDataContent {
 	
 	public String getKey(){
 		String key = inputKey.getText();
-		if (key.length() == 0)
-			throw new RuntimeException(RedisClient.i18nFile.getText(I18nFile.INPUTKEY));
-		else if(key.endsWith(separator)){
-			throw new RuntimeException(RedisClient.i18nFile.getText(I18nFile.KEYENDERROR)+ separator);
-		}
+//		if (key.length() == 0)
+//			throw new RuntimeException(RedisClient.i18nFile.getText(I18nFile.INPUTKEY));
+//		else if(key.endsWith(separator)){
+//			throw new RuntimeException(RedisClient.i18nFile.getText(I18nFile.KEYENDERROR)+ separator);
+//		}
 		
 		return key;
 	}
