@@ -1,5 +1,16 @@
 package com.cxy.redisclient.presentation.string;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.io.OutputFormat;
+import org.dom4j.io.SAXReader;
+import org.dom4j.io.XMLWriter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.ModifyEvent;
@@ -10,6 +21,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -19,6 +31,11 @@ import com.cxy.redisclient.presentation.RedisClient;
 import com.cxy.redisclient.presentation.WatchDialog;
 import com.cxy.redisclient.presentation.component.DataContent;
 import com.cxy.redisclient.service.NodeService;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 
 public class StringDataContent extends DataContent {
 	private NodeService service = new NodeService();
@@ -28,7 +45,8 @@ public class StringDataContent extends DataContent {
 	private Button btnCancel;
 	private Button btnWatch;
 	private Button btnRefresh;
-
+	private Combo textType;
+	private int currentTextType;
 	public StringDataContent(CTabItem tabItem, Image image, int id,
 			String server, int db, String key, String dataTitle) {
 		super(tabItem, image, id, server, db, key, dataTitle);
@@ -56,7 +74,7 @@ public class StringDataContent extends DataContent {
 
 		Composite composite = new Composite(dataComposite, SWT.NONE);
 		composite.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, false, 1, 1));
-		composite.setLayout(new GridLayout(4, false));
+		composite.setLayout(new GridLayout(5, false));
 
 		btnOk = new Button(composite, SWT.NONE);
 		btnOk.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -85,8 +103,7 @@ public class StringDataContent extends DataContent {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				String key = getKey();
-				value = text_value.getText();
-
+				value =spliteString(text_value.getText());
 				service.updateString(id, db, key, value);
 				setApply(false);
 				btnCancel.setEnabled(false);
@@ -96,7 +113,8 @@ public class StringDataContent extends DataContent {
 		btnCancel.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				text_value.setText(value);
+//				text_value.setText(value);
+				tranformText(textType, text_value);
 				setApply(false);
 				btnCancel.setEnabled(false);
 			}
@@ -107,7 +125,8 @@ public class StringDataContent extends DataContent {
 			public void widgetSelected(SelectionEvent e) {
 				value = service.readString(id, db, key);
 
-				text_value.setText(value);
+				tranformText(textType, text_value);
+//				text_value.setText(value);
 			}
 		});
 		btnRefresh.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false,
@@ -125,6 +144,16 @@ public class StringDataContent extends DataContent {
 				WatchDialog dialog = new WatchDialog(shell.getParent()
 						.getShell(), image, text_value.getText());
 				dialog.open();
+			}
+		});
+		
+		textType = new Combo(composite, SWT.DROP_DOWN | SWT.READ_ONLY);
+		textType.setItems(new String[] { RedisClient.i18nFile.getText(I18nFile.PLAINTEXT), RedisClient.i18nFile.getText(I18nFile.JSON) });
+		textType.select(0);
+		textType.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				tranformText(textType, text_value);
 			}
 		});
 	}
@@ -146,5 +175,35 @@ public class StringDataContent extends DataContent {
 	@Override
 	public Button getApplyButtion() {
 		return btnOk;
+	}
+	
+	
+	private String spliteString(String str){
+		if (str!=null) {
+			   Pattern p = Pattern.compile("\\s*|\t|\r|\n");
+			   Matcher m = p.matcher(str);
+			   str = m.replaceAll("");
+			  }
+		return str;
+	}
+
+	private void tranformText(final Combo textType, final Text text) {
+		
+		int index = textType.getSelectionIndex();
+		if (index == 0) {
+			text.setText(spliteString(text.getText()));
+		} else if (index == 1) {
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			JsonParser jp = new JsonParser();
+			try {
+				JsonElement je = jp.parse(text.getText());
+				String prettyJsonString = gson.toJson(je);
+				text.setText(prettyJsonString);
+			} catch (JsonSyntaxException e) {
+				textType.select(currentTextType);
+				throw new RuntimeException(RedisClient.i18nFile.getText(I18nFile.JSONEXCEPTION));
+			}
+
+		} 			
 	}
 }
