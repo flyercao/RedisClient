@@ -13,6 +13,8 @@ import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -392,6 +394,7 @@ public class RedisClient {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				refreshOrder();
+//				search(text.getText().trim());
 				treeItemSelected(true);
 			}
 		});
@@ -399,8 +402,21 @@ public class RedisClient {
 
 		text = new Text(composite, SWT.BORDER);
 		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		text.setEditable(false);
-
+		text.addKeyListener(new KeyListener() {
+			
+			@Override
+			public void keyReleased(KeyEvent e) {
+							
+			}
+			
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.keyCode==SWT.CR){
+					e.doit = false;
+					search(text.getText().trim());
+				}				
+			}
+		});
 		sashForm = new SashForm(composite_1, SWT.NONE);
 		sashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1,
 				1));
@@ -2132,18 +2148,61 @@ public class RedisClient {
 	}
 
 	protected void find() {
+		seachInfo(openFindDialog(),null);
+//		
+//		FindKeyDialog dialog = new FindKeyDialog(shell, iconImage);
+//		FindInfo info = (FindInfo) dialog.open();
+//		if (info != null) {
+//			TreeItem treeItem;
+//
+//			ContainerKeyInfo cinfo = new ContainerKeyInfo();
+//			if (itemsSelected[0] instanceof TreeItem) {
+//				treeItem = (TreeItem) itemsSelected[0];
+//			} else {
+//				treeItem = getTreeItemByTableItem((TableItem) itemsSelected[0]);
+//			}
+//
+//			parseContainer(treeItem, cinfo);
+//			NodeType searchFrom = (NodeType) treeItem.getData(NODE_TYPE);
+//
+//			Set<Node> nodes = service2.find(searchFrom, cinfo.getId(),
+//					cinfo.getDb(), cinfo.getContainerStr(),
+//					info.getSearchNodeType(), info.getPattern(),
+//					info.isForward());
+//			if (!nodes.isEmpty()) {
+//
+//				Node node = nodes.iterator().next();
+//				TreeItem selected = gotoDBContainer(node.getId(), node.getDb(),
+//						node.getKey(), true, true);
+//				history.add(selected);
+//				btnBackward.setEnabled(true);
+//				btnForward.setEnabled(false);
+//
+//				fBuffer = new FindBuffer(node, searchFrom, cinfo.getId(),
+//						cinfo.getDb(), cinfo.getContainerStr(),
+//						info.getSearchNodeType(), info.getPattern());
+//			} else {
+//				MessageDialog.openInformation(shell,
+//						i18nFile.getText(I18nFile.FINDRESULTS),
+//						i18nFile.getText(I18nFile.NOFOUND));
+//			}
+//		}
+	}
+	
+	private FindInfo openFindDialog(){
 		FindKeyDialog dialog = new FindKeyDialog(shell, iconImage);
-		FindInfo info = (FindInfo) dialog.open();
+		return (FindInfo) dialog.open();
+	}
+	private void seachInfo(FindInfo info,TreeItem treeItem){
 		if (info != null) {
-			TreeItem treeItem;
-
+			if(treeItem==null){
+				if (itemsSelected[0] instanceof TreeItem) {
+					treeItem = (TreeItem) itemsSelected[0];
+				} else {
+					treeItem = getTreeItemByTableItem((TableItem) itemsSelected[0]);
+				}
+			}			
 			ContainerKeyInfo cinfo = new ContainerKeyInfo();
-			if (itemsSelected[0] instanceof TreeItem) {
-				treeItem = (TreeItem) itemsSelected[0];
-			} else {
-				treeItem = getTreeItemByTableItem((TableItem) itemsSelected[0]);
-			}
-
 			parseContainer(treeItem, cinfo);
 			NodeType searchFrom = (NodeType) treeItem.getData(NODE_TYPE);
 
@@ -2171,6 +2230,27 @@ public class RedisClient {
 		}
 	}
 
+	private void search(String pattern){
+		if(pattern==null||pattern.length()==0){
+			return;
+		}
+		Set<Node> nodes = service2.findFromRoot(pattern);
+		if (!nodes.isEmpty()) {
+
+			Node node = nodes.iterator().next();
+			TreeItem selected = gotoDBContainer(node.getId(), node.getDb(),
+					node.getKey(), true, true);
+			history.add(selected);
+			btnBackward.setEnabled(true);
+			btnForward.setEnabled(false);
+
+		} else {
+			MessageDialog.openInformation(shell,
+					i18nFile.getText(I18nFile.FINDRESULTS),
+					i18nFile.getText(I18nFile.NOFOUND));
+		}
+	}
+	
 	private void export() {
 		FileDialog dialog = new FileDialog(shell, SWT.SAVE);
 		dialog.setText(i18nFile.getText(I18nFile.EXPORTREDIS));

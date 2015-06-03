@@ -1,5 +1,6 @@
 package com.cxy.redisclient.service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -274,6 +275,25 @@ public class NodeService {
 			throw new IllegalArgumentException();
 		}
 	}
+	
+	public Set<Node> findFromRoot(String pattern){
+		pattern+="*";
+		List<NodeType> searchNodeType=new ArrayList(){{add(NodeType.STRING);add(NodeType.SORTEDSET);add(NodeType.SET);add(NodeType.LIST);add(NodeType.HASH);}};
+		ServerService service = new ServerService();
+		List<Server> servers = service.listAll();
+		Set<Node> nodes = new TreeSet<Node>();
+		for (Server server : servers){
+			nodes.addAll(findKeysFromServer(server.getId(), searchNodeType,	pattern, true));
+			if(pattern.matches(".+:.+:.+")){
+				pattern=pattern.substring(pattern.indexOf(":")+1);
+				pattern=pattern.substring(pattern.indexOf(":")+1);
+				nodes.addAll(findKeysFromServer(server.getId(), searchNodeType,	pattern, true));
+			}
+		}
+		return nodes;
+	}
+	
+	
 
 	private Set<Node> findKeysFromServer(int id, List<NodeType> searchNodeType,
 			String pattern, boolean forward) {

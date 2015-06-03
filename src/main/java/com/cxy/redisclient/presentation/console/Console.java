@@ -242,7 +242,7 @@ public class Console implements Tool {
 				}
 			}
 		});
-		
+		execCmd("auth "+server.getPassword());
 		return tbtmNewItem;
 	}
 
